@@ -6,7 +6,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class StringFinderTest {
 
@@ -61,7 +63,7 @@ public class StringFinderTest {
         expectedList.add(7);
         expectedList.add(10);
         expectedList.add(13);
-        List<Integer> list = stringFinder.getAllOccurencesInText(text);
+        List<Integer> list = stringFinder.getAllOccurrencesInText(text);
         assertEquals(expectedList, list);
     }
 
@@ -87,7 +89,7 @@ public class StringFinderTest {
         }
 
         long start = System.currentTimeMillis();
-        List<Integer> list = stringFinder.getAllOccurencesInText(text);
+        List<Integer> list = stringFinder.getAllOccurrencesInText(text);
         assertEquals(expectedList, list);
         long end = System.currentTimeMillis();
         assertTrue((end - start) < 1000);
@@ -115,7 +117,7 @@ public class StringFinderTest {
         }
 
         long start = System.currentTimeMillis();
-        List<Integer> list = stringFinder.getAllOccurencesInText(text);
+        List<Integer> list = stringFinder.getAllOccurrencesInText(text);
         assertEquals(expectedList, list);
         long end = System.currentTimeMillis();
         assertTrue((end - start) < 1000);
@@ -148,9 +150,9 @@ public class StringFinderTest {
         List<Integer> list = new ArrayList<>();
 
         int index = text.indexOf(pattern);
-        while(index >= 0) {
+        while (index >= 0) {
             list.add(index);
-            index = text.indexOf(pattern, index+1);
+            index = text.indexOf(pattern, index + 1);
         }
 
         assertEquals(expectedList, list);

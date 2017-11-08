@@ -12,8 +12,7 @@ public class ZFunction {
         for (int i = 1; i < s.length(); i++) {
             int j;
             if (zMax > i) {
-                a[i] = Math.min(a[i - zMaxStart], zMax - i + 1);
-                j = i + a[i];
+                j = i + Math.min(a[i - zMaxStart], zMax - i + 1);
             } else {
                 j = i;
             }
