@@ -25,8 +25,8 @@ public class StringFinder {
         }
         safeShift[m - 1] = 1;
         for (int i = 0; i < m - 1; i++) {
-            // i = 0 => rI = m -1
-            // i = m - 2 => rI = 1
+            // i = 0 => reverseIndex = m -1
+            // i = m - 2 => reverseIndex = 1
             int reverseIndex = m - 1 - i;
             int maxSuffix = zFunction.get(reverseIndex);
             if (safeShift[m - 1 - maxSuffix] > m - 1 - i) {
@@ -35,39 +35,41 @@ public class StringFinder {
         }
     }
 
-    public List<Integer> getAllOccurencesInText(String text) {
-        List<Integer> list = new ArrayList<>();
+    public List<Integer> getAllOccurrencesInText(String text) {
+        List<Integer> occurrences = new ArrayList<>();
+
+        // Avoid String.charAt() - which is slow because of it checks StringIndexOutOfBoundsException
         char[] sArray = s.toCharArray();
         char[] textArray = text.toCharArray();
         int n = textArray.length;
         int textStartIndex = 0;
-        int startOldRangeExclusive = -1;
-        int endOldRangeInclusive = -1;
+        int startCheckedRangeExclusive = -1;
+        int endCheckedRangeInclusive = -1;
 
         while (textStartIndex <= n - m) {
             int j = m - 1;
-            while (j > endOldRangeInclusive && sArray[j] == textArray[textStartIndex + j]) {
+            while (j > endCheckedRangeInclusive && sArray[j] == textArray[textStartIndex + j]) {
                 j--;
             }
-            if (j == endOldRangeInclusive) {
-                // [startOldRange; endOldRange] - already checked
-                j = startOldRangeExclusive;
+            if (j == endCheckedRangeInclusive) {
+                // (startCheckedRangeExclusive; endCheckedRangeInclusive] - already checked
+                j = startCheckedRangeExclusive;
                 while (j >= 0 && sArray[j] == textArray[textStartIndex + j]) {
                     j--;
                 }
             }
+            int currentSafeShift;
             if (j < 0) {
-                list.add(textStartIndex);
-                textStartIndex += safeShift[0];
-                startOldRangeExclusive = 0;
-                endOldRangeInclusive = m - 1 - safeShift[0];
+                occurrences.add(textStartIndex);
+                currentSafeShift = safeShift[0];
             } else {
-                textStartIndex += safeShift[j];
-                startOldRangeExclusive = j - safeShift[j];
-                endOldRangeInclusive = m - 1 - safeShift[j];
+                currentSafeShift = safeShift[j];
             }
+            textStartIndex += currentSafeShift;
+            startCheckedRangeExclusive = Math.max(0, j - currentSafeShift);
+            endCheckedRangeInclusive = m - 1 - currentSafeShift;
         }
-        return list;
+        return occurrences;
     }
 
     public int[] getSafeShift() {
