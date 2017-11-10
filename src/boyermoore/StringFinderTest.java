@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -90,13 +91,14 @@ public class StringFinderTest {
 
         long start = System.currentTimeMillis();
         List<Integer> list = stringFinder.getAllOccurrencesInText(text);
-        assertEquals(expectedList, list);
         long end = System.currentTimeMillis();
+        assertEquals(expectedList, list);
         assertTrue((end - start) < 1000);
     }
 
     @Test
     public void getAllOccurrencesInText_largest2() throws Exception {
+        // given
         int m = 20;
         int n = 100000;
         StringBuilder patternBuilder = new StringBuilder();
@@ -108,7 +110,6 @@ public class StringFinderTest {
         for (int i = 0; i < n / m; i++) {
             textBuilder.append(pattern);
         }
-        stringFinder = new StringFinder(pattern);
         String text = textBuilder.toString();
 
         List<Integer> expectedList = new ArrayList<>();
@@ -116,10 +117,13 @@ public class StringFinderTest {
             expectedList.add(2 * i);
         }
 
+        // when
         long start = System.currentTimeMillis();
-        List<Integer> list = stringFinder.getAllOccurrencesInText(text);
-        assertEquals(expectedList, list);
+        List<Integer> result = solveSmart(pattern, text);
         long end = System.currentTimeMillis();
+
+        // then
+        assertEquals(expectedList, result);
         assertTrue((end - start) < 1000);
     }
 
@@ -147,6 +151,33 @@ public class StringFinderTest {
         }
 
         long start = System.currentTimeMillis();
+        List<Integer> list = solveDumb(pattern, text);
+
+        long end = System.currentTimeMillis();
+        assertEquals(expectedList, list);
+        assertTrue((end - start) < 1000);
+    }
+
+    @Test
+    public void getAllOccurrencesInText_random() {
+        // given
+        int k = 10;
+        int m = 5;
+        int n = 1000000;
+
+        String pattern = generateString(m, k);
+        String text = generateString(n, k);
+
+        List<Integer> expected = solveDumb(pattern, text);
+
+        // when
+        List<Integer> result = solveSmart(pattern, text);
+
+        // then
+        assertEquals(expected, result);
+    }
+
+    private List<Integer> solveDumb(String pattern, String text) {
         List<Integer> list = new ArrayList<>();
 
         int index = text.indexOf(pattern);
@@ -155,9 +186,21 @@ public class StringFinderTest {
             index = text.indexOf(pattern, index + 1);
         }
 
-        assertEquals(expectedList, list);
-        long end = System.currentTimeMillis();
-        assertTrue((end - start) < 1000);
+        return list;
+    }
+
+    private List<Integer> solveSmart(String pattern, String text) {
+        StringFinder finder = new StringFinder(pattern);
+        return finder.getAllOccurrencesInText(text);
+    }
+
+    private String generateString(int n, int k) {
+        Random random = new Random(11);
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            builder.append((char)('a' + random.nextInt(k)));
+        }
+        return builder.toString();
     }
 
 }
